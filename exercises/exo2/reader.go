@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "fmt"
 	"io"
 	"os"
 	"strings"
@@ -8,6 +9,19 @@ import (
 
 type spaceEraser struct {
 	r io.Reader
+}
+
+func (s spaceEraser) Read(b []byte) (n int, err error){
+	n, err = s.r.Read(b)
+
+	new_b := []byte{}
+	for _, i := range(b){
+		if i != 32{
+			new_b = append(new_b, i)
+		}
+	}
+	copy(b, new_b)
+	return n, err
 }
 
 func main() {

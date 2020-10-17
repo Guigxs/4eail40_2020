@@ -1,5 +1,9 @@
 package model
 
+import(
+	"fmt"
+)
+
 //TODO Implement game pieces here
 type Coordinate interface {
 	ShowCoord() string
@@ -14,14 +18,20 @@ func (c CoordinateSquare) ShowCoord() string {
 	return "[" + c.Letter + "," + c.Number + "]"
 }
 
-type Piece interface{}
+type IPiece interface{
+	fmt.Stringer
+}
 
-type Empty struct {
+type Piece struct {
 	Repr string
 }
 
-type Queen struct {
-	Movments []string
-	InitialPosition CoordinateSquare
-	CurrentPosition CoordinateSquare
+func (e Piece) String() string{
+	return e.Repr
 }
+
+// type Queen struct {
+// 	Movments []string
+// 	InitialPosition CoordinateSquare
+// 	CurrentPosition CoordinateSquare
+// }

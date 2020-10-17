@@ -2,43 +2,56 @@
 package model
 
 import (
-	"strconv"
 	"fmt"
+	// "strconv"
 )
 
-type Board interface{
+type Board interface {
+	fmt.Stringer
 	Init()
-	Place()
 	Move(FromCoordinate, ToCoordinate Coordinate) int
 	Show() string
 }
 
-type Board8x8 struct{
-	Table map[Coordinate]Piece
+type Board8x8 struct {
+	Table [][]Piece
 }
 
-func (b Board8x8) Init(){
-	b.Table = make(map[Coordinate]Piece)
-	for _, elem := range([]string{"A", "B", "C", "D", "E", "F", "G", "H"}){
-		for i := range([]string{"A", "B", "C", "D", "E", "F", "G", "H"}){
-			var coord Coordinate = CoordinateSquare{Letter:elem, Number:strconv.Itoa(i+1)}
-			b.Table[coord] = Empty{Repr:"_"}
+func (b *Board8x8) Init() {
+	for i := 0; i < 8; i++ {
+		line := make([]Piece, 0)
+		for j := 0; j < 8; j++ {
+			line = append(line, Piece{"_"})
 		}
-	}
-	
-	fmt.Println(b.Table)
-}
 
-func (b Board8x8) Place(pieces map[Coordinate]Piece){
-	for key, elem := range(pieces){
-		b.Table[key] = elem
+		b.Table = append(b.Table, line)
+
 	}
 }
 
-func (b Board8x8) Move(FromCoordinate, ToCoordinate Coordinate) int{
+func (b *Board8x8) Move(FromCoordinate, ToCoordinate Coordinate) int {
 	return 0
 }
 
-func (b Board8x8) Show() string{
+func (b *Board8x8) Show() string {
 	return "BBBB"
+}
+
+func (b *Board8x8) String() string {
+	a := ""
+	for i := range b.Table {
+		if i == 0{
+			a+="|   | A | B | C | D | E | F | G | H |\n"
+		}
+		for j := range b.Table[i] {
+			if j == 0{
+				a += fmt.Sprintf("| %d | ", i+1)
+			}
+			fmt.Println(j)
+			a += fmt.Sprintf(b.Table[i][j].String())
+			a += " | "
+		}
+		a += "\n"
+	}
+	return a
 }

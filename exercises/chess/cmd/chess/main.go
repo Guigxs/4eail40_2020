@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	model "../../model"
 )
 
 func main() {
@@ -28,19 +29,45 @@ func runCommand(commandStr string) (e error) {
 	switch args[0] {
 	case "exit":
 		os.Exit(0)
+
 	// add another case here for custom commands.
+
 	case "new":
+		// a := make(map[model.Coo])
+		// var b model.Board = model.Board8x8{}
+		// b.Init()
+		InitGame()
+		// fmt.Println(b.Show())
+		
+		// c := model.CoordinateSquare{Letter:"A", Number:"6"}
+		// fmt.Println(c.ShowCoord())
 		// TODO Create a new game on a classic 8x8 board.
 		// TODO Display the board on console.
+
 		break
+
 	case "move":
+
 		// TODO Move a piece. (syntax: move <from> <to>)
 		// TODO The command line should be in the form of move A2 A4.
 		// TODO     => meaning move piece from position A2 to A4
 		// TODO Display the board on console.
+
 		break
 	default:
 		e = fmt.Errorf("unknown command %s", args[0])
 	}
 	return
+}
+
+func InitGame() model.State{
+	var board = model.Board8x8{}
+	board.Init()
+	// var pieces8x8 = map[string]int {"Queen":1, "King":1, "Rook":2, "Knight":2, "Bishop":2, "Pawn":8,}
+	// for name, qtty := range pieces8x8{
+	// board.Place()
+	var state model.State = model.State8x8{CurrentBoard:board, PreviousBoard:nil, Player: "root", LastMove:nil} 
+
+	return state
+	// }
 }

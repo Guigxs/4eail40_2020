@@ -5,33 +5,17 @@ import(
 )
 
 //TODO Implement game pieces here
-type Coordinate interface {
-	ShowCoord() string
-}
-
-type CoordinateSquare struct {
-	Letter string
-	Number string
-}
-
-func (c CoordinateSquare) ShowCoord() string {
-	return "[" + c.Letter + "," + c.Number + "]"
-}
 
 type IPiece interface{
 	fmt.Stringer
 }
 
 type Piece struct {
-	Repr string
+	Repr string // To represent on map
+	Direcitons []string // line, diag, L
+	Quantity int // Nomber of case the piece can move
 }
 
 func (e Piece) String() string{
 	return e.Repr
 }
-
-// type Queen struct {
-// 	Movments []string
-// 	InitialPosition CoordinateSquare
-// 	CurrentPosition CoordinateSquare
-// }

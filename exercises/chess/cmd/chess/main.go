@@ -33,14 +33,8 @@ func runCommand(commandStr string) (e error) {
 	// add another case here for custom commands.
 
 	case "new":
-		// a := make(map[model.Coo])
-		// var b model.Board = model.Board8x8{}
-		// b.Init()
 		fmt.Println(InitGame())
-		// fmt.Println(b.Show())
 		
-		// c := model.CoordinateSquare{Letter:"A", Number:"6"}
-		// fmt.Println(c.ShowCoord())
 		// TODO Create a new game on a classic 8x8 board.
 		// TODO Display the board on console.
 

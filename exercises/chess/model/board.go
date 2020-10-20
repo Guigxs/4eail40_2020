@@ -7,30 +7,68 @@ import (
 
 type Board interface {
 	fmt.Stringer
-	Init()
-	Move(FromCoordinate, ToCoordinate []int) int
+	Init() // initialize the game
+	Move(FromCoordinate, ToCoordinate []int) int // Move a piece from X to Y
 }
 
 type Board8x8 struct {
-	Table [][]Piece
+	Table [][]IPiece
 }
 
 func (b *Board8x8) Init() {
 	for i := 0; i < 8; i++ {
-		line := make([]Piece, 0)
+		line := make([]IPiece, 0)
 		for j := 0; j < 8; j++ {
-			line = append(line, Piece{Repr:"_"})
+			line = append(line, Piece{Repr: "_"})
 		}
 
 		b.Table = append(b.Table, line)
 	}
 
-	// TODO : place the 2 teams with root
+	var pieces8x8 = map[string][]int{"Q": []int{3}, "K": []int{4}, "r": []int{0, 7}, "k": []int{1, 6}, "b": []int{2, 5}, "p": []int{0, 1, 2, 3, 4, 5, 6, 7}}
+
+	b.PlaceTeam(pieces8x8, "A")
+	b.PlaceTeam(pieces8x8, "B")
+}
+func (b *Board8x8) PlaceTeam(pieces map[string][]int, team string) int {
+	for key, value := range pieces {
+		for _, i := range value {
+			if key == "p" {
+				var p IPiece
+				if team == "A" {
+					p = Piece{InitPlace: []int{1, i}, Repr: key, Col: Blue, Direcitons: []string{"L", "D"}, Quantity: 1} // Use IPiece with getter/setter
+				} else {
+					p = Piece{InitPlace: []int{6, i}, Repr: key, Col: Red, Direcitons: []string{"L", "D"}, Quantity: 1} // Use IPiece with getter/setter
+				}
+
+				b.Place(p.GetInitPlace(), p)
+			} else {
+				var p IPiece
+				if team == "A" {
+					p = Piece{InitPlace: []int{0, i}, Repr: key, Col: Blue, Direcitons: []string{"L", "D"}, Quantity: 1}
+				} else {
+					p = Piece{InitPlace: []int{7, i}, Repr: key, Col: Red, Direcitons: []string{"L", "D"}, Quantity: 1}
+				}
+				b.Place(p.GetInitPlace(), p)
+			}
+		}
+	}
+	return 1
+}
+func (b *Board8x8) Place(Position []int, P IPiece) int {
+	for i := range b.Table {
+		for j := range b.Table[i] {
+			if Position[0] == i && Position[1] == j {
+				b.Table[i][j] = P
+			}
+		}
+	}
+	return 1
 }
 
-func (b *Board8x8) Move(FromCoordinate, ToCoordinate []int) int{
+func (b *Board8x8) Move(FromCoordinate, ToCoordinate []int) int {
 	// Add 1 to State.ActionNumber
-	return 0
+	return 1
 }
 
 func (b *Board8x8) String() string {

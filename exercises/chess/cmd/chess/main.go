@@ -57,11 +57,12 @@ func runCommand(commandStr string) (e error) {
 func InitGame() model.State{
 	var board = model.Board8x8{}
 	board.Init()
-	var state model.State = model.State8x8{CurrentBoard:board, PreviousState:nil, Player: "root", LastMove:nil, ActionNumber:-2} 
-
+	var state model.State = model.State8x8{CurrentBoard:board, PreviousState:nil, Player: "root", LastMove:nil, ActionNumber:0} 
+	
 	// var pieces8x8 = map[string]int {"Queen":1, "King":1, "Rook":2, "Knight":2, "Bishop":2, "Pawn":8,}
 	// for name, qtty := range pieces8x8{
 	// board.Place()
+	
 
 	return state
 	// }

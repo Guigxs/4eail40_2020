@@ -4,9 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
+
 	model "../../model"
 )
+
+var CurrentState model.State
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
@@ -26,6 +30,7 @@ func main() {
 func runCommand(commandStr string) (e error) {
 	commandStr = strings.TrimSuffix(commandStr, "\n")
 	args := strings.Fields(commandStr)
+
 	switch args[0] {
 	case "exit":
 		os.Exit(0)
@@ -33,19 +38,22 @@ func runCommand(commandStr string) (e error) {
 	// add another case here for custom commands.
 
 	case "new":
-		fmt.Println(InitGame())
-		
-		// TODO Create a new game on a classic 8x8 board.
-		// TODO Display the board on console.
+		CurrentState = InitGame()
+		fmt.Println(CurrentState)
 
 		break
 
 	case "move":
+		firstNum := string(args[1][1])
+		firstNumInt, _ := strconv.Atoi(firstNum)
+		SecondNum := string(args[2][1])
+		SecondNumInt, _ := strconv.Atoi(SecondNum)
 
-		// TODO Move a piece. (syntax: move <from> <to>)
-		// TODO The command line should be in the form of move A2 A4.
-		// TODO     => meaning move piece from position A2 to A4
-		// TODO Display the board on console.
+		from := []int{firstNumInt - 1, GetAlphabetToint(args[1][0])}
+		to := []int{SecondNumInt - 1, GetAlphabetToint(args[2][0])}
+
+		CurrentState = Move(CurrentState, from, to)
+		fmt.Println(CurrentState)
 
 		break
 	default:
@@ -54,16 +62,33 @@ func runCommand(commandStr string) (e error) {
 	return
 }
 
-func InitGame() model.State{
+func InitGame() model.State {
 	var board = model.Board8x8{}
 	board.Init()
-	var state model.State = model.State8x8{CurrentBoard:board, PreviousState:nil, Player: "root", LastMove:nil, ActionNumber:0} 
-	
-	// var pieces8x8 = map[string]int {"Queen":1, "King":1, "Rook":2, "Knight":2, "Bishop":2, "Pawn":8,}
-	// for name, qtty := range pieces8x8{
-	// board.Place()
-	
+	fmt.Println(board)
 
+	var state model.State = &model.State8x8{CurrentBoard: &board, PreviousState: nil, Player: "root", LastMove: nil, ActionNumber: 0}
 	return state
-	// }
+}
+
+func GetAlphabetToint(letter byte) int {
+	alphabetMaj := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	alphabetMin := "abcdefghijklmnopqrstuvwxyz"
+
+	for i := range alphabetMaj {
+		if letter == alphabetMaj[i] || letter == alphabetMin[i] {
+			return i
+		}
+	}
+	return -1
+}
+
+func Move(CurrentState model.State, From, To []int) model.State { // TODO : Divide the function -> Not SOLID
+	PreviousTable := CurrentState.GetCurrentBoard().GetTable()
+	CurrentTable := make([][]model.IPiece, len(PreviousTable))
+	copy(CurrentTable, PreviousTable)
+	var CurrentBoard model.Board = &model.Board8x8{CurrentTable}
+	CurrentBoard.Move(From, To)
+	var state model.State = &model.State8x8{CurrentBoard: CurrentBoard, PreviousState: &CurrentState, Player: "TOP", LastMove: [][]int{From, To}, ActionNumber: CurrentState.GetActionNumber() + 1}
+	return state
 }

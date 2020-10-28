@@ -2,6 +2,8 @@ package piece
 
 import (
 	"fmt"
+
+	coord "../coord"
 )
 
 //TODO Implement game pieces here
@@ -22,19 +24,19 @@ var White Color = Color{Code: "\033[38m"}
 
 type IPiece interface {
 	fmt.Stringer
-	GetInitPlace() []int
+	GetInitPlace() coord.ICoord
 	GetRepr() string
 }
 
 type Piece struct {
-	InitPlace  []int
+	InitPlace  coord.ICoord
 	Repr       string // To represent on map
 	Col        Color
 	Direcitons []string // line, diag, L
 	Quantity   int      // Nomber of case the piece can move
 }
 
-func (e *Piece) GetInitPlace() []int {
+func (e *Piece) GetInitPlace() coord.ICoord {
 	return e.InitPlace
 }
 

@@ -4,13 +4,14 @@ package board
 import (
 	"fmt"
 
+	coord "../coord"
 	piece "../piece"
 )
 
 type IBoard interface {
 	fmt.Stringer
 	Init()                                       // initialize the game
-	Move(FromCoordinate, ToCoordinate []int) int // Move a piece from X to Y
+	Move(FromCoordinate, ToCoordinate coord.ICoord) int // Move a piece from X to Y
 	GetTable() [][]piece.IPiece
 }
 
@@ -32,29 +33,29 @@ func (b *Board8x8) Init() {
 		b.Table = append(b.Table, line)
 	}
 
-	var pieces8x8 = map[string][]int{"Q": []int{3}, "K": []int{4}, "r": []int{0, 7}, "k": []int{1, 6}, "b": []int{2, 5}, "p": []int{0, 1, 2, 3, 4, 5, 6, 7}}
+	var pieces8x8 = map[string][]string{"Q": []string{"D"}, "K": []string{"E"}, "r": []string{"A", "H"}, "k": []string{"B", "G"}, "b": []string{"C", "F"}, "p": []string{"A", "B", "C", "D", "E", "F", "G", "H"}}
 
 	b.PlaceTeam(pieces8x8, "A")
 	b.PlaceTeam(pieces8x8, "B")
 }
-func (b *Board8x8) PlaceTeam(pieces map[string][]int, team string) int {
+func (b *Board8x8) PlaceTeam(pieces map[string][]string, team string) int {
 	for key, value := range pieces {
 		for _, i := range value {
 			if key == "p" {
 				var p piece.IPiece
 				if team == "A" {
-					p = &piece.Piece{InitPlace: []int{1, i}, Repr: key, Col: piece.Blue, Direcitons: []string{"L", "D"}, Quantity: 1} // Use IPiece with getter/setter
+					p = &piece.Piece{InitPlace: &coord.CartesianCoord{i, 1}, Repr: key, Col: piece.Blue, Direcitons: []string{"L", "D"}, Quantity: 1} // Use IPiece with getter/setter
 				} else {
-					p = &piece.Piece{InitPlace: []int{6, i}, Repr: key, Col: piece.Red, Direcitons: []string{"L", "D"}, Quantity: 1} // Use IPiece with getter/setter
+					p = &piece.Piece{InitPlace: &coord.CartesianCoord{i, 6}, Repr: key, Col: piece.Red, Direcitons: []string{"L", "D"}, Quantity: 1} // Use IPiece with getter/setter
 				}
 
 				b.Place(p.GetInitPlace(), p)
 			} else {
 				var p piece.IPiece
 				if team == "A" {
-					p = &piece.Piece{InitPlace: []int{0, i}, Repr: key, Col: piece.Blue, Direcitons: []string{"L", "D"}, Quantity: 1}
+					p = &piece.Piece{InitPlace: &coord.CartesianCoord{i, 0}, Repr: key, Col: piece.Blue, Direcitons: []string{"L", "D"}, Quantity: 1}
 				} else {
-					p = &piece.Piece{InitPlace: []int{7, i}, Repr: key, Col: piece.Red, Direcitons: []string{"L", "D"}, Quantity: 1}
+					p = &piece.Piece{InitPlace: &coord.CartesianCoord{i, 7}, Repr: key, Col: piece.Red, Direcitons: []string{"L", "D"}, Quantity: 1}
 				}
 				b.Place(p.GetInitPlace(), p)
 			}
@@ -62,10 +63,10 @@ func (b *Board8x8) PlaceTeam(pieces map[string][]int, team string) int {
 	}
 	return 1
 }
-func (b *Board8x8) Place(Position []int, P piece.IPiece) int {
+func (b *Board8x8) Place(Position coord.ICoord, P piece.IPiece) int {
 	for i := range b.Table {
 		for j := range b.Table[i] {
-			if Position[0] == i && Position[1] == j {
+			if Position.GetCoord(0) == i && Position.GetCoord(1) == j {
 				b.Table[i][j] = P
 			}
 		}
@@ -73,23 +74,21 @@ func (b *Board8x8) Place(Position []int, P piece.IPiece) int {
 	return 1
 }
 
-func (b *Board8x8) Move(FromCoordinate, ToCoordinate []int) int {
+func (b *Board8x8) Move(FromCoordinate, ToCoordinate coord.ICoord) int {
 	// Add 1 to State.ActionNumber
-	fmt.Println(FromCoordinate)
 	pieceFrom := b.GetPieceAt(FromCoordinate)
-	fmt.Println(pieceFrom)
 	if pieceFrom.GetRepr() != "_" {
 		// TODO : Check with rules
-		b.Table[ToCoordinate[0]][ToCoordinate[1]] = pieceFrom
-		b.Table[FromCoordinate[0]][FromCoordinate[1]] = &piece.Piece{Repr: "_"}
+		b.Table[ToCoordinate.GetCoord(0)][ToCoordinate.GetCoord(1)] = pieceFrom
+		b.Table[FromCoordinate.GetCoord(0)][FromCoordinate.GetCoord(1)] = &piece.Piece{Repr: "_"}
 		return 1
 	}
 
 	return 0
 }
 
-func (b *Board8x8) GetPieceAt(Coordinate []int) piece.IPiece {
-	return b.Table[Coordinate[0]][Coordinate[1]]
+func (b *Board8x8) GetPieceAt(Coordinate coord.ICoord) piece.IPiece {
+	return b.Table[Coordinate.GetCoord(0)][Coordinate.GetCoord(1)]
 }
 
 func (b *Board8x8) String() string {

@@ -10,30 +10,30 @@ type ICoord interface {
 }
 
 type CartesianCoord struct {
-	x byte
-	y int
+	X string
+	Y int
 }
 
 func (c *CartesianCoord) String() string {
-	return fmt.Sprintf("[%s, %d] equivalent to [$d, %d]", c.x, c.y, c.GetAlphabetToint(c.x), c.y)
+	return fmt.Sprintf("%s%d equivalent to [%d, %d]", c.X, c.Y, c.Y, c.GetAlphabetToint(c.X))
 }
 
 func (c *CartesianCoord) GetCoord(id int) int {
 	switch id {
-	case 0:
-		return c.GetAlphabetToint(c.x)
 	case 1:
-		return c.y
+		return c.GetAlphabetToint(c.X)
+	case 0:
+		return c.Y
 	}
 	return -1
 }
 
-func (c CartesianCoord) GetAlphabetToint(letter byte) int {
+func (c CartesianCoord) GetAlphabetToint(letter string) int {
 	alphabetMaj := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	alphabetMin := "abcdefghijklmnopqrstuvwxyz"
 
 	for i := range alphabetMaj {
-		if letter == alphabetMaj[i] || letter == alphabetMin[i] {
+		if letter == string(alphabetMaj[i]) || letter == string(alphabetMin[i]) {
 			return i
 		}
 	}

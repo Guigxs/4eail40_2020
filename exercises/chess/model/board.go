@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type Board interface {
+type IBoard interface {
 	fmt.Stringer
 	Init()                                       // initialize the game
 	Move(FromCoordinate, ToCoordinate []int) int // Move a piece from X to Y
@@ -82,7 +82,7 @@ func (b *Board8x8) Move(FromCoordinate, ToCoordinate []int) int {
 		b.Table[FromCoordinate[0]][FromCoordinate[1]] = &Piece{Repr: "_"}
 		return 1
 	}
-	
+
 	return 0
 }
 

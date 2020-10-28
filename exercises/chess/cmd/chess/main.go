@@ -10,7 +10,7 @@ import (
 	model "../../model"
 )
 
-var CurrentState model.State
+var CurrentState model.IState
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
@@ -52,7 +52,7 @@ func runCommand(commandStr string) (e error) {
 		from := []int{firstNumInt - 1, GetAlphabetToint(args[1][0])}
 		to := []int{SecondNumInt - 1, GetAlphabetToint(args[2][0])}
 
-		CurrentState = Move(CurrentState, from, to)
+		CurrentState = CurrentState.Move(from, to)
 		fmt.Println(CurrentState)
 
 		break
@@ -62,12 +62,12 @@ func runCommand(commandStr string) (e error) {
 	return
 }
 
-func InitGame() model.State {
+func InitGame() model.IState {
 	var board = model.Board8x8{}
 	board.Init()
 	fmt.Println(board)
 
-	var state model.State = &model.State8x8{CurrentBoard: &board, PreviousState: nil, Player: "root", LastMove: nil, ActionNumber: 0}
+	var state model.IState = &model.State8x8{CurrentBoard: &board, PreviousState: nil, Player: "root", LastMove: nil, ActionNumber: 0}
 	return state
 }
 
@@ -83,12 +83,12 @@ func GetAlphabetToint(letter byte) int {
 	return -1
 }
 
-func Move(CurrentState model.State, From, To []int) model.State { // TODO : Divide the function -> Not SOLID
-	PreviousTable := CurrentState.GetCurrentBoard().GetTable()
-	CurrentTable := make([][]model.IPiece, len(PreviousTable))
-	copy(CurrentTable, PreviousTable)
-	var CurrentBoard model.Board = &model.Board8x8{CurrentTable}
-	CurrentBoard.Move(From, To)
-	var state model.State = &model.State8x8{CurrentBoard: CurrentBoard, PreviousState: &CurrentState, Player: "TOP", LastMove: [][]int{From, To}, ActionNumber: CurrentState.GetActionNumber() + 1}
-	return state
-}
+// func Move(CurrentState model.IState, From, To []int) model.IState { // TODO : Divide the function -> Not SOLID
+// 	PreviousTable := CurrentState.GetCurrentBoard().GetTable()
+// 	CurrentTable := make([][]model.IPiece, len(PreviousTable))
+// 	copy(CurrentTable, PreviousTable)
+// 	var CurrentBoard model.IBoard = &model.Board8x8{CurrentTable}
+// 	CurrentBoard.Move(From, To)
+// 	var state model.IState = &model.State8x8{CurrentBoard: CurrentBoard, PreviousState: &CurrentState, Player: "TOP", LastMove: [][]int{From, To}, ActionNumber: CurrentState.GetActionNumber() + 1}
+// 	return state
+// }

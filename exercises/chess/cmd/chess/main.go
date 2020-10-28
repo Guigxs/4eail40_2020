@@ -7,10 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	model "../../model"
+	state "../../model/state"
+	board "../../model/board"
 )
 
-var CurrentState model.IState
+var CurrentState state.IState
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
@@ -62,12 +63,12 @@ func runCommand(commandStr string) (e error) {
 	return
 }
 
-func InitGame() model.IState {
-	var board = model.Board8x8{}
-	board.Init()
-	fmt.Println(board)
+func InitGame() state.IState {
+	var initBoard = board.Board8x8{}
+	initBoard.Init()
+	fmt.Println(initBoard)
 
-	var state model.IState = &model.State8x8{CurrentBoard: &board, PreviousState: nil, Player: "root", LastMove: nil, ActionNumber: 0}
+	var state state.IState = &state.State8x8{CurrentBoard: &initBoard, PreviousState: nil, Player: "root", LastMove: nil, ActionNumber: 0}
 	return state
 }
 
@@ -83,12 +84,12 @@ func GetAlphabetToint(letter byte) int {
 	return -1
 }
 
-// func Move(CurrentState model.IState, From, To []int) model.IState { // TODO : Divide the function -> Not SOLID
+// func Move(CurrentState state.IState, From, To []int) state.IState { // TODO : Divide the function -> Not SOLID
 // 	PreviousTable := CurrentState.GetCurrentBoard().GetTable()
 // 	CurrentTable := make([][]model.IPiece, len(PreviousTable))
 // 	copy(CurrentTable, PreviousTable)
-// 	var CurrentBoard model.IBoard = &model.Board8x8{CurrentTable}
+// 	var CurrentBoard board.IBoard = &board.Board8x8{CurrentTable}
 // 	CurrentBoard.Move(From, To)
-// 	var state model.IState = &model.State8x8{CurrentBoard: CurrentBoard, PreviousState: &CurrentState, Player: "TOP", LastMove: [][]int{From, To}, ActionNumber: CurrentState.GetActionNumber() + 1}
+// 	var state state.IState = &state.State8x8{CurrentBoard: CurrentBoard, PreviousState: &CurrentState, Player: "TOP", LastMove: [][]int{From, To}, ActionNumber: CurrentState.GetActionNumber() + 1}
 // 	return state
 // }

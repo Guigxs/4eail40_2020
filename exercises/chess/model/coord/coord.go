@@ -18,14 +18,14 @@ type CartesianCoord struct {
 }
 
 func (c *CartesianCoord) String() string {
-	return fmt.Sprintf("%s%d equivalent to [%d, %d]", c.X, c.Y, c.Y, c.GetAlphabetToint(c.X))
+	return fmt.Sprintf("%s%d equivalent to [%d, %d]", c.X, c.Y, c.Y, GetAlphabetToInt(c.X))
 }
 
 // GetCoord return the Line, Row indexes for the board.Table
 func (c *CartesianCoord) GetCoord(id int) int {
 	switch id {
 	case 1:
-		return c.GetAlphabetToint(c.X)
+		return GetAlphabetToInt(c.X)
 	case 0:
 		return c.Y
 	}
@@ -33,7 +33,7 @@ func (c *CartesianCoord) GetCoord(id int) int {
 }
 
 // GetAlphabetToInt return the letter index in the alphabet
-func (c CartesianCoord) GetAlphabetToint(letter string) int {
+func GetAlphabetToInt(letter string) int {
 	alphabetMaj := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	alphabetMin := "abcdefghijklmnopqrstuvwxyz"
 

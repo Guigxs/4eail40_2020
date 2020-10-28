@@ -8,21 +8,25 @@ import (
 	piece "../piece"
 )
 
+// IBoard is the board interface
 type IBoard interface {
 	fmt.Stringer
-	Init()                                       // initialize the game
+	Init()                                              // initialize the game
 	Move(FromCoordinate, ToCoordinate coord.ICoord) int // Move a piece from X to Y
 	GetTable() [][]piece.IPiece
 }
 
+// Board8x8 is the IBoard implementation with a 8x8 array
 type Board8x8 struct {
 	Table [][]piece.IPiece
 }
 
+// GetTable return the board array
 func (b *Board8x8) GetTable() [][]piece.IPiece {
 	return b.Table
 }
 
+// Init initialize the board by placing the 2 teams pieces
 func (b *Board8x8) Init() {
 	for i := 0; i < 8; i++ {
 		line := make([]piece.IPiece, 0)
@@ -38,6 +42,8 @@ func (b *Board8x8) Init() {
 	b.PlaceTeam(pieces8x8, "A")
 	b.PlaceTeam(pieces8x8, "B")
 }
+
+// PlaceTeam place a team on the board
 func (b *Board8x8) PlaceTeam(pieces map[string][]string, team string) int {
 	for key, value := range pieces {
 		for _, i := range value {
@@ -63,6 +69,8 @@ func (b *Board8x8) PlaceTeam(pieces map[string][]string, team string) int {
 	}
 	return 1
 }
+
+// Place place an IPiece on the board 
 func (b *Board8x8) Place(Position coord.ICoord, P piece.IPiece) int {
 	for i := range b.Table {
 		for j := range b.Table[i] {
@@ -74,6 +82,7 @@ func (b *Board8x8) Place(Position coord.ICoord, P piece.IPiece) int {
 	return 1
 }
 
+// Move move a IPiece from a ICoord to an ICoord
 func (b *Board8x8) Move(FromCoordinate, ToCoordinate coord.ICoord) int {
 	// Add 1 to State.ActionNumber
 	pieceFrom := b.GetPieceAt(FromCoordinate)
@@ -87,6 +96,7 @@ func (b *Board8x8) Move(FromCoordinate, ToCoordinate coord.ICoord) int {
 	return 0
 }
 
+// GetPieceAt return the piece at the given coordinate
 func (b *Board8x8) GetPieceAt(Coordinate coord.ICoord) piece.IPiece {
 	return b.Table[Coordinate.GetCoord(0)][Coordinate.GetCoord(1)]
 }

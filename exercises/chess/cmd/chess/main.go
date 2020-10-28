@@ -12,6 +12,8 @@ import (
 	state "../../model/state"
 )
 
+// CurrentState is the game state of the program.
+// Write "new" to reset
 var CurrentState state.IState
 
 func main() {
@@ -51,8 +53,8 @@ func runCommand(commandStr string) (e error) {
 		SecondNum := string(args[2][1])
 		SecondNumInt, _ := strconv.Atoi(SecondNum)
 
-		var from coord.ICoord = &coord.CartesianCoord{string(args[1][0]), firstNumInt - 1}
-		var to coord.ICoord = &coord.CartesianCoord{string(args[2][0]), SecondNumInt - 1}
+		var from coord.ICoord = &coord.CartesianCoord{X: string(args[1][0]), Y: firstNumInt - 1}
+		var to coord.ICoord = &coord.CartesianCoord{X: string(args[2][0]), Y: SecondNumInt - 1}
 
 		CurrentState = CurrentState.Move(from, to)
 		fmt.Println(CurrentState)
@@ -64,6 +66,7 @@ func runCommand(commandStr string) (e error) {
 	return
 }
 
+// InitGame initialize the game for a 8x8 board with a 8x8 state
 func InitGame() state.IState {
 	var initBoard = board.Board8x8{}
 	initBoard.Init()

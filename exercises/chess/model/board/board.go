@@ -1,4 +1,4 @@
-// Package model contains the gameplay logic for the game of chess
+// Package board model contains the gameplay logic for the game of chess
 package board
 
 import (
@@ -11,6 +11,7 @@ import (
 // IBoard is the board interface
 type IBoard interface {
 	fmt.Stringer
+	CreateEmptyTable()
 	Init()                                              // initialize the game
 	Move(FromCoordinate, ToCoordinate coord.ICoord) int // Move a piece from X to Y
 	GetTable() [][]piece.IPiece
@@ -26,8 +27,8 @@ func (b *Board8x8) GetTable() [][]piece.IPiece {
 	return b.Table
 }
 
-// Init initialize the board by placing the 2 teams pieces
-func (b *Board8x8) Init() {
+// CreateEmptyTable create an empty table of 8x8
+func (b *Board8x8) CreateEmptyTable() {
 	for i := 0; i < 8; i++ {
 		line := make([]piece.IPiece, 0)
 		for j := 0; j < 8; j++ {
@@ -36,11 +37,31 @@ func (b *Board8x8) Init() {
 
 		b.Table = append(b.Table, line)
 	}
+}
 
-	var pieces8x8 = map[string][]string{"Q": []string{"D"}, "K": []string{"E"}, "r": []string{"A", "H"}, "k": []string{"B", "G"}, "b": []string{"C", "F"}, "p": []string{"A", "B", "C", "D", "E", "F", "G", "H"}}
+// Place place an IPiece on the board
+func (b *Board8x8) Place(Position coord.ICoord, P piece.IPiece) int {
+	if Position.GetCoord(0) < 8 && Position.GetCoord(1) < 8 {
+		for i := range b.Table {
+			for j := range b.Table[i] {
+				if Position.GetCoord(0) == i && Position.GetCoord(1) == j {
+					b.Table[i][j] = P
+				}
+			}
+		}
+		return 1
+	} else {
+		return -1
+	}
+}
 
-	b.PlaceTeam(pieces8x8, "A")
-	b.PlaceTeam(pieces8x8, "B")
+// GetPieceAt return the piece at the given coordinate
+func (b *Board8x8) GetPieceAt(Coordinate coord.ICoord) piece.IPiece {
+	if Coordinate.GetCoord(0) < 8 && Coordinate.GetCoord(1) < 8 {
+		return b.Table[Coordinate.GetCoord(0)][Coordinate.GetCoord(1)]
+	} else {
+		return &piece.Piece{Repr: ""}
+	}
 }
 
 // PlaceTeam place a team on the board
@@ -70,16 +91,14 @@ func (b *Board8x8) PlaceTeam(pieces map[string][]string, team string) int {
 	return 1
 }
 
-// Place place an IPiece on the board 
-func (b *Board8x8) Place(Position coord.ICoord, P piece.IPiece) int {
-	for i := range b.Table {
-		for j := range b.Table[i] {
-			if Position.GetCoord(0) == i && Position.GetCoord(1) == j {
-				b.Table[i][j] = P
-			}
-		}
-	}
-	return 1
+// Init initialize the board by placing the 2 teams pieces
+func (b *Board8x8) Init() {
+	b.CreateEmptyTable()
+
+	var pieces8x8 = map[string][]string{"Q": []string{"D"}, "K": []string{"E"}, "r": []string{"A", "H"}, "k": []string{"B", "G"}, "b": []string{"C", "F"}, "p": []string{"A", "B", "C", "D", "E", "F", "G", "H"}}
+
+	b.PlaceTeam(pieces8x8, "A")
+	b.PlaceTeam(pieces8x8, "B")
 }
 
 // Move move a IPiece from a ICoord to an ICoord
@@ -93,12 +112,7 @@ func (b *Board8x8) Move(FromCoordinate, ToCoordinate coord.ICoord) int {
 		return 1
 	}
 
-	return 0
-}
-
-// GetPieceAt return the piece at the given coordinate
-func (b *Board8x8) GetPieceAt(Coordinate coord.ICoord) piece.IPiece {
-	return b.Table[Coordinate.GetCoord(0)][Coordinate.GetCoord(1)]
+	return -1
 }
 
 func (b *Board8x8) String() string {
